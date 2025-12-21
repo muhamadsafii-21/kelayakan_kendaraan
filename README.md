@@ -1,8 +1,3 @@
-Website sederhana, web uji kelayakan kendaraan. 
-1. login
-2. perbandingan layak / tidak layak
-
-
-cara masuk pertama kali
-1. registrasi
-2. login
+website uji kelayakan kendaraan
+1. dilengkapi dengan pengkondisian layak dan tidak layak
+2. Admin LTE
