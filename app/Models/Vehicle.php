@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Vehicle extends Model
 {
     use HasFactory;
-    protected $fillable = ['plate_number','owner_name','make','model','year','vehicle_type'];
+    protected $fillable = ['plate_number','owner_name','make','model','year','vehicle_type','color','fuel_type'];
 
     public function testResults()
     {

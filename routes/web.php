@@ -5,15 +5,16 @@ use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestResultController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DashboardController;
+ 
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 Route::middleware('auth')->group(function () {
     Route::resource('test_results', TestResultController::class);
     // --- Profil user ---
@@ -36,5 +37,8 @@ Route::middleware('auth')->group(function () {
 Route::post('register', [RegisteredUserController::class, 'store'])
     ->middleware('guest');
 });
+Route::get('/test_results/{test_result}/print-pdf', [App\Http\Controllers\TestResultController::class, 'printPdf'])
+    ->name('test_results.printPdf');
+
 
 require __DIR__.'/auth.php';

@@ -1,40 +1,68 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800">Tambah Kendaraan</h2>
-    </x-slot>
+@extends('layouts.admin')
 
-    <div class="p-6">
+@section('title', 'Tambah Kendaraan')
+
+@section('content')
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Tambah Kendaraan</h4>
+    </div>
+
+    <div class="card-body">
+
         <form method="POST" action="{{ route('vehicles.store') }}">
             @csrf
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label>Plat Nomor</label>
-                    <input type="text" name="plate_number" class="w-full border rounded p-2" required>
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Plat Nomor</label>
+                    <input type="text" name="plate_number" class="form-control" required>
                 </div>
-                <div>
-                    <label>Nama Pemilik</label>
-                    <input type="text" name="owner_name" class="w-full border rounded p-2">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nama Pemilik</label>
+                    <input type="text" name="owner_name" class="form-control">
                 </div>
-                <div>
-                    <label>Merek</label>
-                    <input type="text" name="make" class="w-full border rounded p-2">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Warna</label>
+                    <input type="text" name="color" class="form-control" required>
                 </div>
-                <div>
-                    <label>Model</label>
-                    <input type="text" name="model" class="w-full border rounded p-2">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Merek</label>
+                    <input type="text" name="make" class="form-control">
                 </div>
-                <div>
-                    <label>Tahun</label>
-                    <input type="number" name="year" class="w-full border rounded p-2">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Jenis Kendaraan</label>
+                    <input type="text" name="vehicle_type" class="form-control">
                 </div>
-                <div>
-                    <label>Jenis Kendaraan</label>
-                    <input type="text" name="vehicle_type" class="w-full border rounded p-2">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tahun</label>
+                    <input type="number" name="year" class="form-control" min="1900" max="{{ date('Y') }}">
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Bahan Bakar</label>
+                    <select name="fuel_type" class="form-control" required>
+                        <option value="">-- Pilih Jenis Bahan Bakar --</option>
+                        <option value="Bensin">Bensin</option>
+                        <option value="Solar">Solar</option>
+                        <option value="Listrik">Listrik</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+
             </div>
 
-            <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+            <button class="btn btn-primary mt-3">
+                Simpan
+            </button>
         </form>
+
     </div>
-</x-app-layout>
+</div>
+@endsection

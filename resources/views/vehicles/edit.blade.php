@@ -1,50 +1,98 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Data Kendaraan
-        </h2>
-    </x-slot>
+@extends('layouts.admin')
 
-    <div class="py-6">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+@section('title', 'Edit Data Kendaraan')
+
+@section('content')
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h4>Edit Data Kendaraan</h4>
+            </div>
+
+            <div class="card-body">
                 <form action="{{ route('vehicles.update', $vehicle->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
-                    <div class="mb-4">
-                        <label class="block font-semibold">Nomor Polisi</label>
-                        <input type="text" name="plate_number" value="{{ old('plate_number', $vehicle->plate_number) }}" class="border rounded w-full p-2">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nomor Polisi</label>
+                                <input type="text" name="plate_number"
+                                    value="{{ old('plate_number', $vehicle->plate_number) }}"
+                                    class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nama Pemilik</label>
+                                <input type="text" name="owner_name"
+                                    value="{{ old('owner_name', $vehicle->owner_name) }}"
+                                    class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Warna</label>
+                                <input type="text" name="color"
+                                    value="{{ old('color', $vehicle->color) }}"
+                                    class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Merek</label>
+                                <input type="text" name="make"
+                                    value="{{ old('make', $vehicle->make) }}"
+                                    class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jenis Kendaraan</label>
+                                <input type="text" name="vehicle_type"
+                                    value="{{ old('vehicle_type', $vehicle->vehicle_type) }}"
+                                    class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tahun</label>
+                                <input type="number" name="year"
+                                    value="{{ old('year', $vehicle->year) }}"
+                                    class="form-control"
+                                    min="1900" max="{{ date('Y') }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Bahan Bakar</label>
+                                <select name="fuel_type" class="form-control" required>
+                                    <option value="Bensin" {{ $vehicle->fuel_type == 'Bensin' ? 'selected' : '' }}>Bensin</option>
+                                    <option value="Solar" {{ $vehicle->fuel_type == 'Solar' ? 'selected' : '' }}>Solar</option>
+                                    <option value="Listrik" {{ $vehicle->fuel_type == 'Listrik' ? 'selected' : '' }}>Listrik</option>
+                                    <option value="Hybrid" {{ $vehicle->fuel_type == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-semibold">Nama Pemilik</label>
-                        <input type="text" name="owner_name" value="{{ old('owner_name', $vehicle->owner_name) }}" class="border rounded w-full p-2">
-                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">
+                        Simpan Perubahan
+                    </button>
 
-                    <div class="mb-4">
-                        <label class="block font-semibold">Merek</label>
-                        <input type="text" name="make" value="{{ old('make', $vehicle->make) }}" class="border rounded w-full p-2">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block font-semibold">Model</label>
-                        <input type="text" name="model" value="{{ old('model', $vehicle->model) }}" class="border rounded w-full p-2">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block font-semibold">Tahun</label>
-                        <input type="number" name="year" value="{{ old('year', $vehicle->year) }}" class="border rounded w-full p-2">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block font-semibold">Tipe Kendaraan</label>
-                        <input type="text" name="vehicle_type" value="{{ old('vehicle_type', $vehicle->vehicle_type) }}" class="border rounded w-full p-2">
-                    </div>
-
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Simpan Perubahan</button>
                 </form>
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection

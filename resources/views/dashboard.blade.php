@@ -1,37 +1,89 @@
+@extends('layouts.admin')
 
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight bg-indigo-600 p-4 rounded-md shadow-md">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@section('content')
 
-    <div class="py-8 bg-gray-100 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <h3 class="text-lg font-bold text-gray-700 mb-4">Selamat Datang, {{ Auth::user()->name }} 👋</h3>
+<div class="row">
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-green-100 p-4 rounded-lg shadow hover:shadow-lg transition">
-                        <h4 class="font-semibold text-green-700">Uji Rem</h4>
-                        <p class="text-gray-600 mt-2">Status: <span class="font-bold text-green-600">Lulus</span></p>
-                    </div>
+    <!-- Total Kendaraan -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <h3>{{ $totalKendaraan }}</h3>
+                <p>Total Kendaraan</p>
+            </div>
+            <div class="icon"><i class="fas fa-bus"></i></div>
+        </div>
+    </div>
 
-                    <div class="bg-yellow-100 p-4 rounded-lg shadow hover:shadow-lg transition">
-                        <h4 class="font-semibold text-yellow-700">Uji Emisi</h4>
-                        <p class="text-gray-600 mt-2">Status: <span class="font-bold text-yellow-600">Perlu Pemeriksaan</span></p>
-                    </div>
+    <!-- Layak -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $lulus }}</h3>
+                <p>Kendaraan Layak</p>
+            </div>
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+        </div>
+    </div>
 
-                    <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-lg transition">
-                        <h4 class="font-semibold text-blue-700">Lampu & Kelengkapan</h4>
-                        <p class="text-gray-600 mt-2">Status: <span class="font-bold text-blue-600">Lulus</span></p>
-                    </div>
-                </div>
+    <!-- Tidak Layak -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ $gagal }}</h3>
+                <p>Kendaraan Tidak Layak</p>
+            </div>
+            <div class="icon"><i class="fas fa-times-circle"></i></div>
+        </div>
+    </div>
 
-                <div class="mt-8 text-center">
-                    <p class="text-gray-600">Anda saat ini sudah <span class="font-semibold text-indigo-600">logged in</span>.</p>
-                </div>
+    <!-- Belum Diuji -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ $belumDiuji }}</h3>
+                <p>Belum Diuji</p>
+            </div>
+            <div class="icon"><i class="fas fa-clock"></i></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <!-- Grafik -->
+    <div class="col-md-6">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Grafik Hasil Uji Kendaraan</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="chartUji"></canvas>
             </div>
         </div>
     </div>
-</x-app-layout>
+
+</div>
+
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    new Chart(document.getElementById('chartUji'), {
+        type: 'bar',
+        data: {
+            labels: ['Layak', 'Tidak Layak', 'Belum Diuji'],
+            datasets: [{
+                label: 'Jumlah Kendaraan',
+                data: [
+                    {{ $lulus }},
+                    {{ $gagal }},
+                    {{ $belumDiuji }}
+                ]
+            }]
+        }
+    });
+</script>
+@endpush

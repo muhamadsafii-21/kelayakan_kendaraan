@@ -1,70 +1,116 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Hasil Uji Kendaraan') }}
-        </h2>
-    </x-slot>
+@extends('layouts.admin')
 
-    <div class="py-6">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form action="{{ route('test_results.update', $test_result->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
+@section('title', 'Edit Hasil Uji Kelayakan Kendaraan')
 
-                    <!-- Kendaraan -->
-                    <div class="mb-4">
-                        <label class="block mb-1 font-semibold text-gray-700">Kendaraan</label>
-                        <select name="vehicle_id" class="border-gray-300 rounded-md shadow-sm w-full">
-                            @foreach($vehicles as $v)
-                                <option value="{{ $v->id }}" {{ $v->id == $test_result->vehicle_id ? 'selected' : '' }}>
-                                    {{ $v->plate_number }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+@section('content')
+<div class="main-content" style="padding:20px;">
 
-                    <!-- Tanggal Uji -->
-                    <div class="mb-4">
-                        <label class="block mb-1 font-semibold text-gray-700">Tanggal Uji</label>
-                        <input type="date" name="test_date"
-                            value="{{ $test_result->test_date }}"
-                            class="border-gray-300 rounded-md shadow-sm w-full">
-                    </div>
+    <div class="card">
+        <div class="card-header">
+            <h4>Edit Hasil Uji Kelayakan Kendaraan</h4>
+        </div>
 
-                    <!-- Nilai Kriteria -->
-                    <div class="mb-4">
-                        <h3 class="font-semibold text-gray-800 mb-2">Nilai Kriteria</h3>
-                        @foreach($criteria as $c)
-                            <div class="mb-2">
-                                <label class="text-gray-700">{{ $c->name }} <span class="text-sm text-gray-500">(Bobot: {{ $c->weight }})</span></label>
-                                <input type="number" name="criteria_scores[{{ $c->code }}]"
-                                    value="{{ $test_result->criteria_scores[$c->code] ?? 0 }}"
-                                    min="1" max="5"
-                                    class="border-gray-300 rounded-md shadow-sm w-full">
-                            </div>
+        <div class="card-body">
+
+            <form action="{{ route('test_results.update', $test_result->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <!-- Kendaraan -->
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold">Kendaraan</label>
+                    <select name="vehicle_id" class="form-control">
+                        @foreach($vehicles as $v)
+                            <option value="{{ $v->id }}" {{ $v->id == $test_result->vehicle_id ? 'selected' : '' }}>
+                                {{ $v->plate_number }} - {{ $v->owner_name ?? '' }}
+                            </option>
                         @endforeach
-                    </div>
+                    </select>
+                </div>
 
-                    <!-- Catatan -->
-                    <div class="mb-4">
-                        <label class="block mb-1 font-semibold text-gray-700">Catatan</label>
-                        <textarea name="notes"
-                            class="border-gray-300 rounded-md shadow-sm w-full"
-                            rows="3">{{ $test_result->notes }}</textarea>
-                    </div>
+                <!-- Tanggal Uji -->
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold">Tanggal Uji</label>
+                    <input type="date" name="test_date" value="{{ $test_result->test_date }}"
+                        class="form-control">
+                </div>
 
-                    <!-- Tombol Simpan -->
-                    <div class="flex justify-end space-x-2">
-                        <a href="{{ route('test_results.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-                            Batal
-                        </a>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Simpan Perubahan
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <!-- Penilaian Kriteria -->
+                <h5 class="font-weight-bold mt-4">Penilaian Kriteria</h5>
+
+                @php
+                    $criteria = json_decode($test_result->criteria_scores, true) ?? [];
+                    $all_criteria = [
+                        'rem' => 'Umur Rem',
+                        'emisi' => 'Kadar Emisi CO',
+                        'lampu' => 'Kondisi Lampu Utama',
+                        'ban' => 'Kedalaman Alur Ban',
+                        'oli' => 'Oli Mesin',
+                        'kebisingan' => 'Uji Kebisingan',
+                        'dimensi' => 'Pengukuran Dimensi',
+                    ];
+                @endphp
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-sm">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Kriteria</th>
+                                <th class="text-center">Layak</th>
+                                <th class="text-center">Tidak Layak</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($all_criteria as $key => $label)
+                                <tr>
+                                    <td>{{ $label }}</td>
+                                    <td class="text-center">
+                                        <input type="radio" name="{{ $key }}_status" value="Layak"
+                                            {{ ($criteria[$key]['status'] ?? '') == 'Layak' ? 'checked' : '' }}>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="radio" name="{{ $key }}_status" value="Tidak Layak"
+                                            {{ ($criteria[$key]['status'] ?? '') == 'Tidak Layak' ? 'checked' : '' }}>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="{{ $key }}_notes" class="form-control"
+                                            value="{{ $criteria[$key]['notes'] ?? '' }}">
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Catatan Umum -->
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold">Catatan Umum</label>
+                    <textarea name="notes" class="form-control" rows="3">{{ $test_result->notes }}</textarea>
+                </div>
+
+                <!-- Status Akhir -->
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold">Status Akhir</label>
+                    <select name="status" class="form-control">
+                        <option value="Layak" {{ $test_result->status == 'Layak' ? 'selected' : '' }}>Layak</option>
+                        <option value="Tidak Layak" {{ $test_result->status == 'Tidak Layak' ? 'selected' : '' }}>Tidak Layak</option>
+                    </select>
+                </div>
+
+                <!-- Tombol -->
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('test_results.index') }}" class="btn btn-secondary mr-2">
+                        Batal
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection

@@ -10,6 +10,8 @@
         th, td { border: 1px solid #000; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
         .status { font-weight: bold; }
+        .layak { color: green; font-weight: bold; }
+        .tidak-layak { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -21,29 +23,52 @@
     <p><strong>Tanggal Uji:</strong> {{ $test_result->test_date }}</p>
     <p><strong>Petugas:</strong> {{ $test_result->user->name ?? '-' }}</p>
 
-    <h2>Hasil Penilaian</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Kriteria</th>
-                <th>Bobot</th>
-                <th>Nilai</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($test_result->criteria_scores as $code => $score)
-                <tr>
-                    <td>{{ $criteria[$code]->name ?? $code }}</td>
-                    <td>{{ $criteria[$code]->weight ?? '-' }}</td>
-                    <td>{{ $score }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <h2>Hasil Pemeriksaan</h2>
 
-    <p><strong>Skor Akhir:</strong> {{ number_format($test_result->score, 2) }}</p>
-    <p class="status"><strong>Status:</strong> 
-        {{ strtoupper($test_result->status) }}
+    @php
+        $criteria = json_decode($test_result->criteria_scores, true) ?? [];
+        $all_criteria = [
+            'rem' => 'Umur Rem',
+            'emisi' => 'Kadar Emisi CO',
+            'lampu' => 'Kondisi Lampu Utama',
+            'ban' => 'Kedalaman Alur Ban',
+            'oli' => 'Oli Mesin',
+            'kebisingan' => 'Uji Kebisingan',
+            'dimensi' => 'Pengukuran Dimensi'
+        ];
+    @endphp
+
+    @if(!empty($criteria))
+        <table>
+            <thead>
+                <tr>
+                    <th>Kriteria</th>
+                    <th>Hasil</th>
+                    <th>Catatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($all_criteria as $key => $label)
+                    <tr>
+                        <td>{{ $label }}</td>
+                        <td class="{{ ($criteria[$key]['status'] ?? '') == 'Layak' ? 'layak' : 'tidak-layak' }}">
+                            {{ $criteria[$key]['status'] ?? '-' }}
+                        </td>
+                        <td>{{ $criteria[$key]['notes'] ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>Tidak ada data detail pemeriksaan.</p>
+    @endif
+
+    <br>
+    <p class="status">
+        <strong>Status Akhir:</strong>
+        <span class="{{ $test_result->status == 'Layak' ? 'layak' : 'tidak-layak' }}">
+            {{ strtoupper($test_result->status) }}
+        </span>
     </p>
 
     <p><strong>Catatan:</strong> {{ $test_result->notes ?? '-' }}</p>

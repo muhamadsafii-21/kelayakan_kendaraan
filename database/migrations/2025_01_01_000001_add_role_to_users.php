@@ -9,8 +9,10 @@ class AddRoleToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom role untuk membedakan antara admin dan pemilik mobil
-            $table->string('role')->default('user'); // nilai default: 'user' (pemilik mobil)
+            // Tambahkan kolom role (admin_petugas atau pemilik)
+            $table->enum('role', ['admin_petugas', 'pemilik'])
+                  ->default('pemilik')
+                  ->after('password');
         });
     }
 

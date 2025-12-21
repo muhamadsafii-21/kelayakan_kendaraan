@@ -21,7 +21,7 @@
 <body class="font-sans antialiased bg-gray-100">
 <div class="min-h-screen flex">
     <!-- Sidebar kiri -->
-    <aside class="w-64 bg-blue-500 text-white flex flex-col">
+    <aside class="w-50 bg-blue-500 text-white flex flex-col">
         <div class="p-4 text-2xl font-bold text-center border-b border-blue-700">
             ARRAMCO TOUR & TRAVEL
         </div>
